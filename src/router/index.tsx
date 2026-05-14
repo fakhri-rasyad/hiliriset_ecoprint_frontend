@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { useAuthState } from "../store/authStore";
+import { useAuthStore } from "../store/authStore";
 import Dashboard from "../pages/Dashboard";
 import Login from "../pages/Login";
 import Sessions from "../pages/Sessions";
@@ -7,7 +7,7 @@ import SessionHistory from "../pages/SessionHistory";
 import SessionLive from "../pages/SessionLive";
 
 function PrivateRoute({children} : {children: React.ReactNode}) {
-    const token = useAuthState((state) => state.token)
+    const token = useAuthStore((state) => state.token)
     return token ? <>{children}</> : <Navigate to="login" replace/>
 } 
 

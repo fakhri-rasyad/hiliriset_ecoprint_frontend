@@ -5,10 +5,11 @@ import Login from "../pages/Login";
 import Sessions from "../pages/Sessions";
 import SessionHistory from "../pages/SessionHistory";
 import SessionLive from "../pages/SessionLive";
+import Layout from "../components/layout/layout";
 
 function PrivateRoute({children} : {children: React.ReactNode}) {
     const token = useAuthStore((state) => state.token)
-    return token ? <>{children}</> : <Navigate to="login" replace/>
+    return token ? <Layout>{children}</Layout> : <Navigate to="login" replace/>
 } 
 
 export default function Router(){

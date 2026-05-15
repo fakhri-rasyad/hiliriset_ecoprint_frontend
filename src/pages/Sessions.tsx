@@ -18,6 +18,8 @@ export default function Sessions() {
   const [komporId, setKomporId] = useState('')
   const [fabricType, setFabricType] = useState<FabricType>('katun')
   const [formError, setFormError] = useState('')
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState<string>('all')
   const {addToast} = useToastStore()
 
   const sessions = useQuery({
@@ -62,13 +64,22 @@ export default function Sessions() {
   }
 
   const allSessions = sessions.data?.Data ?? []
+  const filteredSessions = allSessions
+  .filter((s) => {
+    const matchesSearch =
+      s.public_id.toLowerCase().includes(search.toLowerCase()) ||
+      s.fabric_type.toLowerCase().includes(search.toLowerCase())
+    const matchesStatus =
+      statusFilter === 'all' || s.boiling_status === statusFilter
+    return matchesSearch && matchesStatus
+  })
   const allEsps = esps.data?.Data ?? []
   const allKompors = kompors.data?.Data ?? []
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-xl font-semibold text-gray-800">Sessions</h2>
           <p className="text-sm text-gray-400 mt-0.5">{allSessions.length} total sessions</p>
@@ -79,6 +90,25 @@ export default function Sessions() {
         >
           + New Session
         </button>
+      </div>
+
+      <div className="flex gap-3 mb-6">
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by session ID or fabric type..."
+          className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-500"
+        />
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-green-500"
+        >
+          <option value="all">All Status</option>
+          <option value="boiling">Running</option>
+          <option value="finished">Finished</option>
+        </select>
       </div>
 
       {showForm && (
@@ -182,7 +212,14 @@ export default function Sessions() {
                 </td>
               </tr>
             )}
-            {allSessions.map((session) => (
+            {filteredSessions.length === 0 && !sessions.isLoading && (
+              <tr>
+                <td colSpan={5} className="px-5 py-8 text-center text-gray-400">
+                  No sessions match your search
+                </td>
+              </tr>
+            )}
+            {filteredSessions.map((session) => (
               <tr key={session.public_id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
                 <td className="px-5 py-3 font-mono text-xs text-gray-600">{session.public_id}</td>
                 <td className="px-5 py-3 capitalize text-gray-600">{session.fabric_type}</td>

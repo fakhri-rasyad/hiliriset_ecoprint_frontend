@@ -1,5 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
+import { useToastStore } from '../../store/toastStore'
+import { ToastContainer } from '../ui/Toast'
 
 const navItems = [
   { label: 'Dashboard', path: '/', icon: '▦' },
@@ -16,6 +18,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     logout()
     navigate('/login')
   }
+
+  const { toasts, removeToast } = useToastStore()
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
@@ -60,7 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-y-auto">
         {children}
       </main>
-
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
     </div>
   )
 }

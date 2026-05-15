@@ -5,6 +5,7 @@ import { getSessions, createSession } from '../api/sessions'
 import { getEsps } from '../api/esps'
 import { getKompors } from '../api/kompors'
 import type { FabricType } from '../types/session'
+import { useToastStore } from '../store/toastStore'
 
 const FABRIC_TYPES: FabricType[] = ['katun', 'polyester', 'linen', 'sutra']
 
@@ -17,6 +18,7 @@ export default function Sessions() {
   const [komporId, setKomporId] = useState('')
   const [fabricType, setFabricType] = useState<FabricType>('katun')
   const [formError, setFormError] = useState('')
+  const {addToast} = useToastStore()
 
   const sessions = useQuery({
     queryKey: ['sessions'],
@@ -39,10 +41,11 @@ export default function Sessions() {
       queryClient.invalidateQueries({ queryKey: ['sessions'] })
       setShowForm(false)
       setFormError('')
+      addToast('Session started successfully!', 'success')
       navigate(`/sessions/${data.Data.public_id}/live`)
     },
     onError: () => {
-      setFormError('Failed to create session. Please try again.')
+      addToast('Failed to create session. Please try again.', 'error')
     },
   })
 
@@ -185,7 +188,7 @@ export default function Sessions() {
                 <td className="px-5 py-3 capitalize text-gray-600">{session.fabric_type}</td>
                 <td className="px-5 py-3">
                   <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                    session.boiling_status === 'running'
+                    session.boiling_status === 'boiling'
                       ? 'bg-green-50 text-green-700'
                       : 'bg-gray-100 text-gray-500'
                   }`}>
@@ -198,13 +201,13 @@ export default function Sessions() {
                 <td className="px-5 py-3 text-right">
                   <button
                     onClick={() =>
-                      session.boiling_status === 'running'
+                      session.boiling_status === 'boiling'
                         ? navigate(`/sessions/${session.public_id}/live`)
                         : navigate(`/sessions/${session.public_id}/history`)
                     }
                     className="text-xs text-green-600 hover:text-green-800 font-medium"
                   >
-                    {session.boiling_status === 'running' ? 'View Live →' : 'View History →'}
+                    {session.boiling_status === 'boiling' ? 'View Live →' : 'View History →'}
                   </button>
                 </td>
               </tr>

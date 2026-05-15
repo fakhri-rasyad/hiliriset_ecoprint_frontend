@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { getSessionById } from '../api/sessions'
 import { useWebSocket } from '../hooks/useWebSocket'
 import { useSessionStore } from '../store/sessionStore'
+import { useCountdown } from '../hooks/useCountdown'
 
 function TelemetryCard({
   label,
@@ -28,19 +29,31 @@ function TelemetryCard({
 }
 
 function CountdownTimer({ finishedAt }: { finishedAt: string }) {
-  const diff = new Date(finishedAt.replace(' ', 'T')).getTime() - Date.now()
-  if (diff <= 0) return <span className="text-red-500 text-sm font-medium">Time's up</span>
-  const totalMinutes = Math.floor(diff / 60000)
-  const hours = Math.floor(totalMinutes / 60)
-  const minutes = totalMinutes % 60
-  const seconds = Math.floor((diff % 60000) / 1000)
+  const timeLeft = useCountdown(finishedAt)
+
+  if (!timeLeft) return (
+    <span className="text-red-500 text-sm font-medium">Time's up</span>
+  )
+
   return (
-    <span className="text-sm font-medium text-gray-700">
-      {hours > 0 ? `${hours}h ` : ''}{minutes}m {seconds}s remaining
-    </span>
+    <div className="flex items-center gap-1.5">
+      {timeLeft.hours > 0 && (
+        <span className="text-sm font-medium text-gray-700">
+          {String(timeLeft.hours).padStart(2, '0')}
+          <span className="text-gray-400 text-xs ml-0.5">h</span>
+        </span>
+      )}
+      <span className="text-sm font-medium text-gray-700">
+        {String(timeLeft.minutes).padStart(2, '0')}
+        <span className="text-gray-400 text-xs ml-0.5">m</span>
+      </span>
+      <span className="text-sm font-medium text-gray-700">
+        {String(timeLeft.seconds).padStart(2, '0')}
+        <span className="text-gray-400 text-xs ml-0.5">s</span>
+      </span>
+    </div>
   )
 }
-
 export default function SessionLive() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()

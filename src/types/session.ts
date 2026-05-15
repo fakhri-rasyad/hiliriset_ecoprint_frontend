@@ -23,7 +23,7 @@ export interface SessionRecord {
   air_temp: number
   water_temp: number
   humidity: number
-  recorded_at: string
+  created_at: string
 }
 
 export interface TelemetryMessage {

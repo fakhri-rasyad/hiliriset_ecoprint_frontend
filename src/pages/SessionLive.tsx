@@ -28,7 +28,7 @@ function TelemetryCard({
 }
 
 function CountdownTimer({ finishedAt }: { finishedAt: string }) {
-  const diff = new Date(finishedAt).getTime() - Date.now()
+  const diff = new Date(finishedAt.replace(' ', 'T')).getTime() - Date.now()
   if (diff <= 0) return <span className="text-red-500 text-sm font-medium">Time's up</span>
   const totalMinutes = Math.floor(diff / 60000)
   const hours = Math.floor(totalMinutes / 60)
@@ -72,7 +72,6 @@ export default function SessionLive() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-xl font-semibold text-gray-800">Live Session</h2>
@@ -95,7 +94,6 @@ export default function SessionLive() {
         </div>
       </div>
 
-      {/* Finished banner */}
       {isFinished && (
         <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center justify-between">
           <div>
@@ -111,7 +109,6 @@ export default function SessionLive() {
         </div>
       )}
 
-      {/* Telemetry cards */}
       <div className="grid grid-cols-3 gap-4 mb-6">
         <TelemetryCard
           label="Water Temperature"
@@ -133,7 +130,6 @@ export default function SessionLive() {
         />
       </div>
 
-      {/* Readings log */}
       <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
           <h3 className="text-sm font-semibold text-gray-700">Readings Log</h3>

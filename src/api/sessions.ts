@@ -12,8 +12,8 @@ export const getSessionById = async(id: string) : Promise<ApiResponse<Session>> 
     return response.data
 }
 
-export const getSessionRecords = async(id:string) : Promise<ApiResponse<SessionRecord>> => {
-    const response = await api.get<ApiResponse<SessionRecord>>(`/api/v1/sessions/${id}/records`)
+export const getSessionRecords = async(id:string) : Promise<ApiResponse<SessionRecord[]>> => {
+    const response = await api.get<ApiResponse<SessionRecord[]>>(`/api/v1/sessions/${id}/records`)
     return response.data
 }
 

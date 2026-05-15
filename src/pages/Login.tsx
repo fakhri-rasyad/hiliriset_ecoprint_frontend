@@ -17,11 +17,9 @@ const handleLogin = async () => {
   setLoading(true)
   try {
     const data = await login({ email, password })
-    console.log('response:', data)
     setToken(data.Data.token, data.Data.username)
     navigate('/')
   } catch (err) {
-    console.log('error:', err)
     setError('Invalid email or password')
   } finally {
     setLoading(false)

@@ -9,10 +9,19 @@ interface UseWebSocketOptions {
 export function useWebSocket(sessionId: string, options: UseWebSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null)
   const { onMessage, onFinished } = options
+  const getWsUrl = () => {
+    const apiUrl = import.meta.env.VITE_API_URL
+    if (apiUrl) {
+      return apiUrl.replace('http', 'ws')
+    }
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${window.location.host}`
+  }
+
 
   useEffect(() => {
     const ws = new WebSocket(
-      `ws://localhost:3000/api/v1/sessions/${sessionId}/ws`
+      `${getWsUrl()}/api/v1/sessions/${sessionId}/ws`
     )
     wsRef.current = ws
 

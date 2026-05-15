@@ -9,10 +9,11 @@ interface UseWebSocketOptions {
 export function useWebSocket(sessionId: string, options: UseWebSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null)
   const { onMessage, onFinished } = options
+  const wsUrl = import.meta.env.VITE_API_URL.replace("http", "ws")
 
   useEffect(() => {
     const ws = new WebSocket(
-      `ws://localhost:3000/api/v1/sessions/${sessionId}/ws`
+      `${wsUrl}/api/v1/sessions/${sessionId}/ws`
     )
     wsRef.current = ws
 
